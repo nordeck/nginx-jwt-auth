@@ -17,6 +17,11 @@ location /hello {
 ### Testing
 
 ```bash
-TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ik5vcmRlY2sifQ.quzbz5ll7BNigkCxXRZylBB4sHGd_SgP8qUVQ5Wei3o"
+TOKEN="\
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.\
+eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ik5vcmRlY2siLCJuYmYiOjE1MTYyMzkwMjIsImV4cCI6MjAxNjIzOTAyMn0.\
+OWw9KK7xPXBJ_AXbaETrhkPMw_2NNyrrrHHhwTwCnKY\
+"
+
 curl -L -H "Authorization: Bearer $TOKEN" https://my.host.address/hello
 ```
