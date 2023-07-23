@@ -113,7 +113,7 @@ function verify(token, algo, key)
 
   if not header.typ or header.typ ~= "JWT" then unauthorized() end
   if not header.alg or header.alg ~= algo then unauthorized() end
-  -- validate the token
+  -- verify the token depending on its algorithm
   if not algoVerify[algo](data, sign, key) then unauthorized() end
   -- validate exp (expire time) if exists in the payload
   if payload.exp and type(payload.exp) ~= "number" then unauthorized() end
