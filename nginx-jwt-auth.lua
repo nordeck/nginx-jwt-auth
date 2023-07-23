@@ -106,6 +106,9 @@ end
 -- -----------------------------------------------------------------------------
 -- main
 -- -----------------------------------------------------------------------------
+-- dont verify if the module is disabled
+if ngx.var.jwt_disabled == "on" then return end;
+
 -- get key from Nginx config
 local key;
 if ngx.var.jwt_key then
