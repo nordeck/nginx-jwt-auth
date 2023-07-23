@@ -16,13 +16,26 @@ wget -O /usr/local/share/nginx-jwt-auth.lua \
     https://raw.githubusercontent.com/nordeck/nginx-jwt-auth/main/nginx-jwt-auth.lua
 ```
 
-### Nginx config
+### Nginx config with jwt_key
 
 ```conf
 location /hello {
     set $jwt_key "myappsecret";
     access_by_lua_file /usr/local/share/nginx-jwt-auth.lua;
 }
+```
+
+### Nginx config with jwt_key_file
+
+```conf
+location /hello {
+    set $jwt_key_file /path/secret;
+    access_by_lua_file /usr/local/share/nginx-jwt-auth.lua;
+}
+```
+
+```bash
+echo -n "myappsecret" >/path/secret
 ```
 
 ### Testing
