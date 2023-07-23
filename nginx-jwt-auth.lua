@@ -33,9 +33,7 @@ local signDataHS = {
 -- -----------------------------------------------------------------------------
 function verifySignRS(data, sign, key, algo)
   local pubkey = pkey.new(key)
-  if not pubkey then
-    return false
-  end
+  if not pubkey then return false end
 
   local datadigest = digest.new(algo):update(data)
   return pubkey:verify(sign, datadigest)
