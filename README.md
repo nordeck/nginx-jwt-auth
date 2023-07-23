@@ -1,6 +1,6 @@
 # nginx-jwt-auth
 
-`Lua` module implements client authorization for `Nginx` by validating `JWT`.
+`Lua` module to authorize clients by validating `JWT` in `Nginx`.
 
 ### Dependencies
 
