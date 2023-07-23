@@ -4,6 +4,8 @@
 
 ### Dependencies
 
+For `Debian`, install the following packages.
+
 ```bash
 apt-get install libnginx-mod-http-lua
 apt-get install lua-cjson lua-basexx lua-luaossl
