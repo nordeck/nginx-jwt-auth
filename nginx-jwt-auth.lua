@@ -86,19 +86,19 @@ end
 -- -----------------------------------------------------------------------------
 function parseToken(token)
   local segments = splitToken(token)
-  if #segments ~= 3 then unauthorized() end
+  if #segments ~= 3 then return nil, nil, nil, nil end
 
   -- decode the header of token
   local header, err = cjson_safe.decode(basexx.from_url64(segments[1]))
-  if err then unauthorized() end
+  if err then return nil, nil, nil, nil end
 
   -- decode the payload of token
   local payload, err = cjson_safe.decode(basexx.from_url64(segments[2]))
-  if err then unauthorized() end
+  if err then return nil, nil, nil, nil end
 
   -- decode the signature of token
   local sign, err = basexx.from_url64(segments[3])
-  if err then unauthorized() end
+  if err then return nil, nil, nil, nil end
 
   -- data is the combination of the header and the payload without the signature
   local data = segments[1] .. "." .. segments[2]
@@ -111,17 +111,18 @@ end
 -- -----------------------------------------------------------------------------
 function verify(token, algo, key)
   local header, payload, sign, data = parseToken(token)
+  if not header then return false end
 
-  if not header.typ or header.typ ~= "JWT" then unauthorized() end
-  if not header.alg or header.alg ~= algo then unauthorized() end
+  if not header.typ or header.typ ~= "JWT" then return false end
+  if not header.alg or header.alg ~= algo then return false end
   -- verify the token depending on its algorithm
-  if not algoVerify[algo](data, sign, key) then unauthorized() end
+  if not algoVerify[algo](data, sign, key) then return false end
   -- validate exp (expire time) if exists in the payload
-  if payload.exp and type(payload.exp) ~= "number" then unauthorized() end
-  if payload.exp and os.time() >= payload.exp then unauthorized() end
+  if payload.exp and type(payload.exp) ~= "number" then return false end
+  if payload.exp and os.time() >= payload.exp then return false end
   -- validate nbf (not before time) if exists in the payload
-  if payload.nbf and type(payload.nbf) ~= "number" then unauthorized() end
-  if payload.nbf and os.time() < payload.nbf then unauthorized() end
+  if payload.nbf and type(payload.nbf) ~= "number" then return false end
+  if payload.nbf and os.time() < payload.nbf then return false end
 
   return true
 end
