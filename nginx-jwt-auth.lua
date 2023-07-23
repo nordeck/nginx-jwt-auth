@@ -6,10 +6,14 @@ local pkey = require 'openssl.pkey'
 local algo = "HS256"
 
 -- -----------------------------------------------------------------------------
+-- unauthorized
+-- -----------------------------------------------------------------------------
 function unauthorized()
   ngx.exit(ngx.HTTP_UNAUTHORIZED)
 end
 
+-- -----------------------------------------------------------------------------
+-- algoSign
 -- -----------------------------------------------------------------------------
 local algoSign = {
   ['HS256'] = function(data, key)
@@ -24,6 +28,8 @@ local algoSign = {
 }
 
 -- -----------------------------------------------------------------------------
+-- algoVerify
+-- -----------------------------------------------------------------------------
 local algoVerify = {
   ['HS256'] = function(data, sign, key)
                 return sign == algoSign['HS256'](data, key)
@@ -37,6 +43,8 @@ local algoVerify = {
 }
 
 -- -----------------------------------------------------------------------------
+-- splitToken
+-- -----------------------------------------------------------------------------
 function splitToken(token)
   local segments={}
   for seg in string.gmatch(token, "[^.]+") do
@@ -46,6 +54,8 @@ function splitToken(token)
   return segments
 end
 
+-- -----------------------------------------------------------------------------
+-- parseToken
 -- -----------------------------------------------------------------------------
 function parseToken(token)
   local segments = splitToken(token)
@@ -66,16 +76,24 @@ function parseToken(token)
 end
 
 -- -----------------------------------------------------------------------------
+-- verify
+-- -----------------------------------------------------------------------------
 function verify(token, algo, key)
   local header, payload, sign, data = parseToken(token)
 
   if not header.typ or header.typ ~= "JWT" then unauthorized() end
   if not header.alg or header.alg ~= algo then unauthorized() end
   if not algoVerify[algo](data, sign, key) then unauthorized() end
+  if payload.exp and type(payload.exp) ~= "number" then unauthorized() end
+  if payload.exp and os.time() >= payload.exp then unauthorized() end
+  if payload.nbf and type(payload.nbf) ~= "number" then unauthorized() end
+  if payload.nbf and os.time() < payload.nbf then unauthorized() end
 
   return true
 end
 
+-- -----------------------------------------------------------------------------
+-- main
 -- -----------------------------------------------------------------------------
 if not (ngx.var.jwt_key or ngx.var.jwt_key_file) then
   ngx.log(ngx.ERR, "JWT key is not found")
@@ -101,8 +119,3 @@ if (not string.match(auth, "^Bearer ")) then unauthorized() end
 local token = string.sub(auth, 8)
 if (not token) then unauthorized() end
 if (not verify(token, algo, key)) then unauthorized() end
-
-ngx.say(ngx.var.jwt_key)
-ngx.say(ngx.var.jwt_key_file)
-ngx.say(algo)
-ngx.say(token)
