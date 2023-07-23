@@ -1,8 +1,19 @@
+# nginx-jwt-auth
+
+`Lua` module implements client authorization for `Nginx` by validating `JWT`.
+
 ### Dependencies
 
 ```bash
 apt-get install libnginx-mod-http-lua
 apt-get install lua-cjson lua-basexx lua-luaossl
+```
+
+### Installation
+
+```bash
+wget -O /usr/local/share/nginx-jwt-auth.lua \
+    https://raw.githubusercontent.com/nordeck/nginx-jwt-auth/main/nginx-jwt-auth.lua
 ```
 
 ### Nginx config
