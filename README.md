@@ -1,3 +1,10 @@
+### Dependencies
+
+```bash
+apt-get install libnginx-mod-http-lua
+apt-get install lua-cjson lua-basexx lua-luaossl
+```
+
 ### Nginx config
 
 ```conf
