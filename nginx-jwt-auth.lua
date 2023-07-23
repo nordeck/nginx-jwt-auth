@@ -4,6 +4,7 @@ local digest = require 'openssl.digest'
 local hmac = require 'openssl.hmac'
 local pkey = require 'openssl.pkey'
 local algo = "HS256"
+local key
 
 -- -----------------------------------------------------------------------------
 -- unauthorized
@@ -129,10 +130,9 @@ end
 -- main
 -- -----------------------------------------------------------------------------
 -- dont verify if the module is disabled
-if ngx.var.jwt_disabled == "on" then return end;
+if ngx.var.jwt_disabled == "on" then return end
 
 -- get key from Nginx config
-local key;
 if ngx.var.jwt_key then
   key = ngx.var.jwt_key
 elseif ngx.var.jwt_key_file then
