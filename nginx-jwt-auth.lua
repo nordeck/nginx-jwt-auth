@@ -13,19 +13,32 @@ function unauthorized()
 end
 
 -- -----------------------------------------------------------------------------
--- algoSign
+-- signDataHS
 -- -----------------------------------------------------------------------------
-local algoSign = {
+local signDataHS = {
   ['HS256'] = function(data, key)
-	        return hmac.new(key, 'sha256'):final(data)
-	      end,
+                return hmac.new(key, 'sha256'):final(data)
+              end,
   ['HS384'] = function(data, key)
-	        return hmac.new(key, 'sha384'):final(data)
-	      end,
+                return hmac.new(key, 'sha384'):final(data)
+              end,
   ['HS512'] = function(data, key)
-	        return hmac.new(key, 'sha512'):final(data)
-	      end
+                return hmac.new(key, 'sha512'):final(data)
+              end
 }
+
+-- -----------------------------------------------------------------------------
+-- verifySignRS
+-- -----------------------------------------------------------------------------
+function verifySignRS(data, sign, key, algo)
+  local pubkey = pkey.new(key)
+  if not pubkey then
+    return false
+  end
+
+  local datadigest = digest.new(algo):update(data)
+  return pubkey:verify(sign, datadigest)
+end
 
 -- -----------------------------------------------------------------------------
 -- algoVerify
@@ -34,13 +47,22 @@ local algoSign = {
 -- -----------------------------------------------------------------------------
 local algoVerify = {
   ['HS256'] = function(data, sign, key)
-                return sign == algoSign['HS256'](data, key)
+                return sign == signDataHS['HS256'](data, key)
               end,
   ['HS384'] = function(data, sign, key)
-                return sign == algoSign['HS384'](data, key)
+                return sign == signDataHS['HS384'](data, key)
               end,
   ['HS512'] = function(data, sign, key)
-                return sign == algoSign['HS512'](data, key)
+                return sign == signDataHS['HS512'](data, key)
+              end,
+  ['RS256'] = function(data, sign, key)
+                return verifySignRS(data, sign, key, 'sha256')
+              end,
+  ['RS384'] = function(data, sign, key)
+                return verifySignRS(data, sign, key, 'sha384')
+              end,
+  ['RS512'] = function(data, sign, key)
+                return verifySignRS(data, sign, key, 'sha512')
               end
 }
 
