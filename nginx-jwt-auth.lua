@@ -95,12 +95,17 @@ end
 -- -----------------------------------------------------------------------------
 -- main
 -- -----------------------------------------------------------------------------
-if not (ngx.var.jwt_key or ngx.var.jwt_key_file) then
+local key;
+if ngx.var.jwt_key then
+  key = ngx.var.jwt_key
+elseif ngx.var.jwt_key_file then
+  local f = io.open(ngx.var.jwt_key_file, "rb")
+  key = f:read(_VERSION <= "Lua 5.2" and "*a" or "a")
+  f.close()
+else
   ngx.log(ngx.ERR, "JWT key is not found")
   unauthorized()
 end
-
-local key = ngx.var.jwt_key
 
 if ngx.var.jwt_algo then
   algo = ngx.var.jwt_algo
