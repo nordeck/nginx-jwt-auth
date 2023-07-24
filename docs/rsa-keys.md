@@ -6,12 +6,10 @@ Tested in `Debian 12 Bookworm`.
 mkdir -p rsa-keys
 cd rsa-keys
 
-ssh-keygen -qP '' -t rsa -b 4096 -m PEM -f my-jwt.key
-openssl rsa -in my-jwt.key -pubout -outform PEM -out my-jwt.pub
-
-rm -f my-jwt.key.pub
+openssl genrsa -out jwt-rsa.key 4096
+openssl rsa -in jwt-rsa.key -pubout -outform PEM -out jwt-rsa.pub
 ```
 
-- `my-jwt.key` is the private key
+- `jwt-rsa.key` is the private key
 
-- `my-jwt.pub` is the public key
+- `jwt-rsa.pub` is the public key
