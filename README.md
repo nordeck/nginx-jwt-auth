@@ -2,6 +2,11 @@
 
 `Lua` module to authorize clients by validating `JWT` in `Nginx`.
 
+Supported algorithms:
+
+- `HS256`, `HS384`, `HS512`
+- `RS256`, `RS384`, `RS512`
+
 ### Dependencies
 
 For `Debian`, install the following packages.
