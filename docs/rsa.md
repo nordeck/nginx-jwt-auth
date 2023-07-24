@@ -17,4 +17,3 @@ rm -f my-jwt.key.pub
 - `my-jwt.key` is the private key
 
 - `my-jwt.pub` is the public key
-

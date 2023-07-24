@@ -18,26 +18,52 @@ wget -O /usr/local/share/nginx-jwt-auth.lua \
     https://raw.githubusercontent.com/nordeck/nginx-jwt-auth/main/nginx-jwt-auth.lua
 ```
 
-### Nginx config with jwt_key
+### Configuration
+
+#### HMAC with a key
+
+Sample `Nginx` location for `HS256` algorithm with `jwt_key`.
 
 ```conf
 location /hello {
+    set $jwt_algo "HS256";
     set $jwt_key "myappsecret";
     access_by_lua_file /usr/local/share/nginx-jwt-auth.lua;
 }
 ```
 
-### Nginx config with jwt_key_file
+#### HMAC with a key file
+
+Sample `Nginx` location for `HS512` algorithm with `jwt_key_file`.
 
 ```conf
 location /hello {
-    set $jwt_key_file /path/secret;
+    set $jwt_algo "HS512";
+    set $jwt_key_file /path/keyfile;
     access_by_lua_file /usr/local/share/nginx-jwt-auth.lua;
 }
 ```
 
 ```bash
-echo -n "myappsecret" >/path/secret
+echo -n "myappsecret" >/path/keyfile
+```
+
+#### RSA with a key file
+
+Sample `Nginx` location for `RS256` algorithm with `jwt_key_file`.
+
+```conf
+location /hello {
+    set $jwt_algo "RS256";
+    set $jwt_key_file /path/keyfile;
+    access_by_lua_file /usr/local/share/nginx-jwt-auth.lua;
+}
+```
+
+`/path/keyfile` contains the public RSA key in `PEM` format.
+
+```bash
+mv jwt-rsa.pub /path/keyfile
 ```
 
 ### Testing
