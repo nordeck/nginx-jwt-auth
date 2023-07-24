@@ -1,6 +1,4 @@
-# RSA
-
-### Generating keys
+# Generating RSA keys
 
 Tested in `Debian 12 Bookworm`.
 
