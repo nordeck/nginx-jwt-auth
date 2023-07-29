@@ -71,7 +71,7 @@ local algoVerify = {
 -- token is a string with header, payload and signature combined with dots
 -- -----------------------------------------------------------------------------
 function splitToken(token)
-  local segments={}
+  local segments = {}
   for seg in string.gmatch(token, "[^.]+") do
     table.insert(segments, seg)
   end
